@@ -2,13 +2,13 @@ import './App.css';
 import * as React from 'react';
 import axios from 'axios';
 
-const {useState} = React;
+const {useEffect, useState} = React;
 
 const fetchRandomData = () => {
   return axios.get('https://randomuser.me/api/')
-    .then(res => {
-      console.log(res)
-      return res
+    .then(({data}) => {
+      console.log(data)
+      return JSON.stringify(data, null, 2)
     })
     .catch(err => {
       console.log(err)
@@ -17,17 +17,29 @@ const fetchRandomData = () => {
 
 function App() {
   const [counter, setCounter] = useState(0);
+  const [randomUserData, setRandomUserData] = useState('')
+
+  useEffect(() => {
+    fetchRandomData().then(randomData => {
+      setRandomUserData(randomData || "No user data found")
+    })
+  }, []);
+
   return (
-    <div className="App">
+    <div >
       <p>{counter}</p>
       <button onClick={ () => {
         setCounter(counter + 1);
         
       }} >Increase counter</button>
 
-      <button onClick={ () => {
+      <br/>
+      <pre>
+        {randomUserData}
+      </pre >
+      {/* <button onClick={ () => {
         fetchRandomData();
-      }} >Fetch Random</button>
+      }} >Fetch Random</button> */}
     </div>
     
   );
